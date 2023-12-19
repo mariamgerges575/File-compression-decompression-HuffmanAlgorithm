@@ -20,7 +20,7 @@ public class Compress {
                 byte[] arr = Arrays.copyOfRange(fileBytes, i, Math.min(fileLenInBytes,i+n));
                 StringBuilder nBytes = new StringBuilder();
                 for (byte b : arr) {
-                    nBytes.append(String.valueOf(b));
+                    nBytes.append((char)b);
                 }
                 if (!frequencies.containsKey(nBytes.toString())) {
                     frequencies.put(nBytes.toString(), 1);
@@ -47,8 +47,10 @@ public class Compress {
 //                System.out.println(x.c+": "+x.code);
 //            }
             printNodes(root);
-            String outputFile="20011880."+n+"" +"."+
-                    filePath.substring(filePath.lastIndexOf("\\")+1)+".hc";
+//            String path = "C:\\Users\\mariam\\Desktop\\HuffmanAlgorithm\\src\\main\\java\\org\\example\\file.txt";
+            int lastIndOf=filePath.lastIndexOf("\\")+1;
+            String outputFile= filePath.substring(0,lastIndOf)+"20011880."+n+"" +"."+
+                    filePath.substring(lastIndOf)+".hc";
 
             BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
             ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);

@@ -15,6 +15,7 @@ public class Main {
 //        String path = args[1];
         String choice ="c";
         String path = "C:\\Users\\mariam\\Desktop\\HuffmanAlgorithm\\src\\main\\java\\org\\example\\file.txt";
+
         if(choice.equals("c")){
             Compress compress=new Compress();
 //            int n=Integer.parseInt(args[2]);
