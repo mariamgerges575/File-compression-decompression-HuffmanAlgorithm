@@ -14,40 +14,57 @@ public class Compress {
     HashMap<String, String> codes = new HashMap<>();
 
     public void compressFile(String filePath, int n) {
-        int bufferSize = 20; // Adjust the buffer size as needed
+//        int bufferSize = 2048-(2048%n); // Adjust the buffer size as needed
+        int bufferSize = 40; // Adjust the buffer size as needed
 
         try (InputStream inputStream = new FileInputStream(filePath)) {
             byte[] buffer = new byte[bufferSize];
             int bytesRead;
-            int zft=0;
+            int howLong=-1;
+            String specialKey="";
+            String specialKeyP="";
+            System.out.println("start frequency");
             while ((bytesRead = inputStream.read(buffer)) != -1) {
 //                System.out.println("bytessssssssssssss"+bytesRead);
                 for (int i = 0; i < bytesRead; i += n) {
                     byte[] arr = Arrays.copyOfRange(buffer, i, Math.min(bytesRead, i + n));
+
                     StringBuilder nBytes = new StringBuilder();
                     for (byte b : arr) {
                         nBytes.append(b);
                         nBytes.append(":");
                     }
-                    zft++;
+                    if(arr.length<n){
+//                        System.out.println("ya rrrrrrrrrrrrrrrrb"+nBytes);
+                        specialKeyP=nBytes.toString();
+                       for(int j=arr.length;j<n;j++){
+                           nBytes.append(0);
+                           nBytes.append(":");
+                       }
+                       specialKey=nBytes.toString();
+                       howLong=arr.length;
+                    }
                     if (!frequencies.containsKey(nBytes.toString())) {
+//                        System.out.println("keys "+nBytes);
                         frequencies.put(nBytes.toString(), 1);
                     } else
                         frequencies.put(nBytes.toString(), frequencies.get(nBytes.toString()) + 1);
                 }
 
             }
+            System.out.println("end frequency");
+            System.out.println("start huffman");
             inputStream.close();
-            int freqss=0;
             for (String key : frequencies.keySet()) {
-                pq.add(new Node(key, frequencies.get(key)));
-                freqss+=frequencies.get(key);
-                System.out.println( key + ": " + frequencies.get(key));
+                if(key.equals(specialKey)){
+                    pq.add(new Node(specialKeyP, frequencies.get(key)));
+                }
+                else
+                     pq.add(new Node(key, frequencies.get(key)));
+//                System.out.println( key + ": " + frequencies.get(key));
             }
             int unique=frequencies.size();
 
-//            System.out.println("ffffffffffffff"+freqss);
-//            System.out.println(zft);
              File file = new File(filePath);
             Node root = null;
             while (pq.size() > 1) {
@@ -61,6 +78,8 @@ public class Compress {
             }
             pq.poll();
             prefix(root);
+            System.out.println("end huffman");
+
 //            System.out.println("ssssss" + codes.size());
 //            printNodes(root);
             //////////////////////output file name//////////////////////
@@ -68,6 +87,7 @@ public class Compress {
             String outputFile = filePath.substring(0, lastIndOf) + "20011880." + n + "" + "." +
                     filePath.substring(lastIndOf) + ".hc";
             /////////////////////write header//////////////////////////////////
+            System.out.println("start write freq");
 
             BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
             ByteBuffer buffern = ByteBuffer.allocate(Integer.BYTES);
@@ -78,13 +98,28 @@ public class Compress {
             buffern.putInt(unique);
             bytes = buffern.array();
             outputStream.write(bytes);
+            int counter=0;
+            int itsOrder=-1;
             for (String key : frequencies.keySet()) {
-                String[] splitBytesStrings=key.split(":");
-                byte[] splitBytes=new byte[n];
-                for(int i=0;i<n;i++){
-                    splitBytes[i]=Byte.parseByte(splitBytesStrings[i]);
+                if(key.equals(specialKey)){
+                    itsOrder=counter;
+                    String[] splitBytesStrings=specialKeyP.split(":");
+                    byte[] splitBytes=new byte[n];
+                    for(int i=0;i<splitBytesStrings.length;i++){
+                        splitBytes[i]=Byte.parseByte(splitBytesStrings[i]);
+                    }
+                    outputStream.write(splitBytes);
                 }
-                outputStream.write(splitBytes);
+//                System.out.println("order "+key);
+                else {
+                    String[] splitBytesStrings = key.split(":");
+                    byte[] splitBytes = new byte[n];
+                    for (int i = 0; i < splitBytesStrings.length; i++) {
+                        splitBytes[i] = Byte.parseByte(splitBytesStrings[i]);
+                    }
+                    outputStream.write(splitBytes);
+
+                }
 //                outputStream.write(key.getBytes(StandardCharsets.UTF_8));
 
 //                outputStream.write(frequencies.get(key));
@@ -92,20 +127,28 @@ public class Compress {
                 buffern.clear();
                 buffern.putInt(frequencies.get(key));
                 bytes = buffern.array();
-//                int i = 0;
-//                while (i < 4) {
-//                    if (bytes[i] != 0) break;
-//                    i++;
-//                }
                 outputStream.write(bytes);
                 outputStream.flush();
+                counter++;
 
 //                outputStream.write(';');
 
             }
+            System.out.println("end write freq");
+
+            buffern.clear();
+            buffern.putInt(itsOrder);
+            bytes = buffern.array();
+            outputStream.write(bytes);
+            buffern.clear();
+            buffern.putInt(howLong);
+            bytes = buffern.array();
+            outputStream.write(bytes);
 //            outputStream.write('#');
 
             /////////////////////write compressed file//////////////////////////////////
+            System.out.println("start write");
+
             StringBuilder acc = new StringBuilder();
             byte[] bufferxx = new byte[bufferSize];
             InputStream inputStream1 = new FileInputStream(filePath);
@@ -126,13 +169,13 @@ public class Compress {
                     }
                     String code = codes.get(chunk);
                     acc.append(code);
-//                if(acc.length()==8){
-//                    int intValue = Integer.parseInt(acc, 2); // Parse as an integer
-//                    byte b = (byte) intValue; // Convert to byte
-////                    byte b = Byte.parseByte(acc, 2 );
-//                    outputStream.write(b);
-//                    acc = "";
-//                }
+                if(acc.length()==8){
+                    int intValue = Integer.parseInt(acc.toString(), 2); // Parse as an integer
+                    byte b = (byte) intValue; // Convert to byte
+//                    byte b = Byte.parseByte(acc, 2 );
+                    outputStream.write(b);
+                    acc = new StringBuilder();
+                }
                     while (acc.length() >= 8) {
 //                    System.out.println(acc.substring(0,8));
 //                    System.out.println(acc);
@@ -145,13 +188,13 @@ public class Compress {
                 }
                 outputStream.flush();
             }
-//            while (acc.length() > 8) {
-//                int intValue = Integer.parseInt(acc.substring(0,8), 2); // Parse as an integer
-//                byte b = (byte) intValue; // Convert to byte
-////                byte b = Byte.parseByte(acc.substring(0, 8), 2);
-//                outputStream.write(b);
-//                acc = acc.substring(8);
-//            }
+            while (acc.length() > 8) {
+                int intValue = Integer.parseInt(acc.substring(0,8), 2); // Parse as an integer
+                byte b = (byte) intValue; // Convert to byte
+//                byte b = Byte.parseByte(acc.substring(0, 8), 2);
+                outputStream.write(b);
+                acc = new StringBuilder(acc.substring(8));
+            }
             if (acc.length() > 0) {
                 int x =  acc.length();
                 for (int i = 0; i < 8-x; i++) {
@@ -165,13 +208,16 @@ public class Compress {
             }
             else{
                 outputStream.write(0);
+                outputStream.write(0);
             }
             outputStream.flush();
             outputStream.close();
+            System.out.println("end write");
 
-            File f = new File(outputFile);
-            System.out.println(f.length());
-            System.out.println(file.length());
+
+//            File f = new File(outputFile);
+//            System.out.println(f.length());
+//            System.out.println(file.length());
             //////////////////////finish writing////////////////////////
 //            File f=new File(outputFile);
 //            System.out.println("jhj"+f.length());
@@ -193,6 +239,7 @@ public class Compress {
 
     void prefix(Node root) {
         if (root.left == null || root.right == null) {
+//            System.out.println(root.c+" "+root.code);
             codes.put(root.c, root.code);
             return;
         }
