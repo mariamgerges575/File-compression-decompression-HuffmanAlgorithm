@@ -1,11 +1,9 @@
 package org.example;
 import java.io.*;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.PriorityQueue;
 
 public class Compress {
@@ -15,7 +13,7 @@ public class Compress {
 
     public void compressFile(String filePath, int n) {
 //        int bufferSize = 2048-(2048%n); // Adjust the buffer size as needed
-        int bufferSize = 40; // Adjust the buffer size as needed
+        int bufferSize = 2048-(2048%n); // Adjust the buffer size as needed
 
         try (InputStream inputStream = new FileInputStream(filePath)) {
             byte[] buffer = new byte[bufferSize];
@@ -52,20 +50,30 @@ public class Compress {
                 }
 
             }
+            for (String key : frequencies.keySet()) {
+//                if(key.equals(specialKey)){
+//                    pq.add(new Node(specialKeyP, frequencies.get(key)));
+//                }
+//                else
+//                pq.add(new Node(key, frequencies.get(key)));
+                System.out.println( key + ": " + frequencies.get(key));
+            }
+            System.out.println(specialKey);
+            System.out.println(specialKeyP);
             System.out.println("end frequency");
             System.out.println("start huffman");
             inputStream.close();
             for (String key : frequencies.keySet()) {
-                if(key.equals(specialKey)){
-                    pq.add(new Node(specialKeyP, frequencies.get(key)));
-                }
-                else
+//                if(key.equals(specialKey)){
+//                    pq.add(new Node(specialKeyP, frequencies.get(key)));
+//                }
+//                else
                      pq.add(new Node(key, frequencies.get(key)));
 //                System.out.println( key + ": " + frequencies.get(key));
             }
             int unique=frequencies.size();
-
-             File file = new File(filePath);
+            System.out.println("uuuuu"+unique);
+//             File file = new File(filePath);
             Node root = null;
             while (pq.size() > 1) {
                 Node x = pq.poll();
@@ -102,16 +110,17 @@ public class Compress {
             int itsOrder=-1;
             for (String key : frequencies.keySet()) {
                 if(key.equals(specialKey)){
+                    System.out.println(key+" "+specialKeyP);
                     itsOrder=counter;
-                    String[] splitBytesStrings=specialKeyP.split(":");
-                    byte[] splitBytes=new byte[n];
-                    for(int i=0;i<splitBytesStrings.length;i++){
-                        splitBytes[i]=Byte.parseByte(splitBytesStrings[i]);
-                    }
-                    outputStream.write(splitBytes);
+//                    String[] splitBytesStrings=specialKeyP.split(":");
+//                    byte[] splitBytes=new byte[splitBytesStrings.length];
+//                    for(int i=0;i<splitBytesStrings.length;i++){
+//                        splitBytes[i]=Byte.parseByte(splitBytesStrings[i]);
+//                    }
+//                    outputStream.write(splitBytes);
                 }
 //                System.out.println("order "+key);
-                else {
+//                else {
                     String[] splitBytesStrings = key.split(":");
                     byte[] splitBytes = new byte[n];
                     for (int i = 0; i < splitBytesStrings.length; i++) {
@@ -119,7 +128,7 @@ public class Compress {
                     }
                     outputStream.write(splitBytes);
 
-                }
+//                }
 //                outputStream.write(key.getBytes(StandardCharsets.UTF_8));
 
 //                outputStream.write(frequencies.get(key));
@@ -161,10 +170,16 @@ public class Compress {
                         nBytes.append(b);
                         nBytes.append(":");
                     }
+                    String chunk;
+                    if(nBytes.toString().equals(specialKeyP)){
+                         chunk = specialKey;
+                    }
 //                    System.out.println(nBytes);
 //                String chunk=new String(arr, java.nio.charset.StandardCharsets.UTF_8);
-                    String chunk = nBytes.toString();
-                    if (!codes.containsKey(nBytes.toString())) {
+                    else {
+                        chunk = nBytes.toString();
+                    }
+                    if (!codes.containsKey(chunk) ){
                         System.out.println("something wrong");
                     }
                     String code = codes.get(chunk);
@@ -239,8 +254,11 @@ public class Compress {
 
     void prefix(Node root) {
         if (root.left == null || root.right == null) {
-//            System.out.println(root.c+" "+root.code);
-            codes.put(root.c, root.code);
+          if(Objects.equals(root.c, "13:10:") || Objects.equals(root.c, "13:10:0:")) {
+              System.out.println(root.c);
+              System.out.println(root.code);
+          }
+          codes.put(root.c, root.code);
             return;
         }
         root.left.code += root.code + '0';
@@ -251,7 +269,7 @@ public class Compress {
 
     void printNodes(Node root) {
         if (root.left == null || root.right == null) {
-            System.out.println(root.code);
+//            System.out.println(root.code);
             return;
         }
 //        assert root.left != null;

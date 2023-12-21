@@ -13,7 +13,8 @@ public class Node implements Comparable<Node>{
         this.c=c;
         this.frequency=frequency;
     }
-    Node(byte[] bytes,int frequency){
+    Node(String c,byte[] bytes,int frequency){
+        this.c=c;
         this.bytes=bytes;
         this.frequency=frequency;
     }

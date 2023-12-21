@@ -33,22 +33,22 @@ public class Main {
 //        }
 //        String choice = args[0];
 //        String path = args[1];
-        String choice ="d";
+        String choice ="c";
 //        String path = "C:\\Users\\mariam\\Desktop\\HuffmanAlgorithm\\src\\main\\java\\org\\example\\file.txt";
 //        String path="C:\\Users\\mariam\\Desktop\\HuffmanAlgorithm\\gbbct10.seq";
-//        String path="C:\\Users\\mariam\\Desktop\\HuffmanAlgorithm\\James_F_Kurose,_Keith_Ross_Computer_Networking_A_Top_Down_Approach.pdf";
+        String path="C:\\Users\\mariam\\Desktop\\HuffmanAlgorithm\\James_F_Kurose,_Keith_Ross_Computer_Networking_A_Top_Down_Approach.pdf";
 //
 //        String path ="20011880.4.James_F_Kurose,_Keith_Ross_Computer_Networking_A_Top_Down_Approach.pdf.hc";
 //        String path="C:\\Users\\mariam\\Desktop\\HuffmanAlgorithm\\src\\main\\java\\org\\example\\20011880.3.file.txt.hc";
-//            String path="C:\\Users\\mariam\\Desktop\\HuffmanAlgorithm\\20011880.2.James_F_Kurose,_Keith_Ross_Computer_Networking_A_Top_Down_Approach.pdf.hc";
+//            String path="C:\\Users\\mariam\\Desktop\\HuffmanAlgorithm\\20011880.3.James_F_Kurose,_Keith_Ross_Computer_Networking_A_Top_Down_Approach.pdf.hc";
 //        String path="C:\\Users\\mariam\\Desktop\\HuffmanAlgorithm\\20011880.1.gbbct10.seq.hc";
-        String path="C:\\Users\\mariam\\Desktop\\HuffmanAlgorithm\\20011880.2.gbbct10.seq.hc";
-//        String path="C:\\Users\\mariam\\Desktop\\HuffmanAlgorithm\\20011880.1.James_F_Kurose,_Keith_Ross_Computer_Networking_A_Top_Down_Approach.pdf.hc";
-//        String path="C:\\Users\\mariam\\Desktop\\HuffmanAlgorithm\\src\\main\\java\\org\\example\\20011880.3.file.txt.hc";
+//        String path="C:\\Users\\mariam\\Desktop\\HuffmanAlgorithm\\20011880.5.gbbct10.seq.hc";
+//        String path="C:\\Users\\mariam\\Desktop\\HuffmanAlgorithm\\20011880.3.James_F_Kurose,_Keith_Ross_Computer_Networking_A_Top_Down_Approach.pdf.hc";
+//        String path="C:\\Users\\mariam\\Desktop\\HuffmanAlgorithm\\src\\main\\java\\org\\example\\20011880.4.file.txt.hc";
         if(choice.equals("c")){
             Compress compress=new Compress();
 //            int n=Integer.parseInt(args[2]);
-            int n=2;
+            int n=3;
             compress.compressFile(path, n);
 
 

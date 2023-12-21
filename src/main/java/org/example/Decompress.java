@@ -23,10 +23,11 @@ public class Decompress {
             int bytesRead=inputStream.read(buffer);
 //            System.out.println(bytesRead);
             n=ByteBuffer.wrap(buffer).getInt();
-//            System.out.println(n);
+            System.out.println("nnnnnnnnnn"+n);
             buffer = new byte[4];
             bytesRead=inputStream.read(buffer);
             int unique=ByteBuffer.wrap(buffer).getInt();
+            System.out.println("kkkkkkkkk"+unique);
             int k=0;
 //            System.out.println(unique);
 //            int bufferSize = 2048-(2048%(n+4));
@@ -50,25 +51,34 @@ public class Decompress {
 //                System.out.println(nBytes+": "+intValue);
                     k++;
             }
+            for (String key : frequencies.keySet()) {
+//                if(key.equals(specialKey)){
+//                    pq.add(new Node(specialKeyP, frequencies.get(key)));
+//                }
+//                else
+//                pq.add(new Node(key, frequencies.get(key)));
+                System.out.println( key + ": " + frequencies.get(key));
+            }
             buffer = new byte[4];
             bytesRead=inputStream.read(buffer);
             int itsOrder=ByteBuffer.wrap(buffer).getInt();
             buffer = new byte[4];
             bytesRead=inputStream.read(buffer);
             int howLong=ByteBuffer.wrap(buffer).getInt();
-//            System.out.println("kkkkk "+itsOrder);
-//            System.out.println(howLong);
+            System.out.println("kkkkk "+itsOrder);
+            System.out.println(howLong);
             int c=0;
             for (String key : frequencies.keySet()) {
 //                System.out.println("order"+ key);
                 if(c==itsOrder){
-//                    System.out.println(key);
+                    System.out.println(key);
                     String[] splitBytesStrings = key.split(":");
                     byte[] splitBytes = new byte[howLong];
                     for (int i = 0; i < howLong; i++) {
                         splitBytes[i] = Byte.parseByte(splitBytesStrings[i]);
                     }
-                    pq.add(new Node(splitBytes, frequencies.get(key)));
+                    System.out.println(Arrays.toString(splitBytes));
+                    pq.add(new Node(key, frequencies.get(key)));
                 }
                 else {
 //                    System.out.println("ji "+key);
@@ -77,7 +87,7 @@ public class Decompress {
                     for (int i = 0; i < n; i++) {
                         splitBytes[i] = Byte.parseByte(splitBytesStrings[i]);
                     }
-                    pq.add(new Node( splitBytes, frequencies.get(key)));
+                    pq.add(new Node(key, frequencies.get(key)));
                 }
                 c++;
             }
@@ -102,8 +112,8 @@ public class Decompress {
             Node n=root;
             int bit=0;
             StringBuilder acc = new StringBuilder();
-//            int bufferSize = 2048 - (2048 % this.n);
-            int bufferSize = 40;
+            int bufferSize = 2048 - (2048 % this.n);
+//            int bufferSize = 40;
 
             byte[] bufferxx = new byte[  bufferSize ];
 
@@ -217,6 +227,10 @@ public class Decompress {
     }
     void prefix(Node root) {
         if (root.left == null || root.right == null) {
+            if(Objects.equals(root.c, "13:10:0:")){
+                System.out.println(root.code);
+            }
+//            System.out.println(root.c+" "+ Arrays.toString(root.bytes));
 //            System.out.println(root.c+" "+root.code);
             return;
         }
