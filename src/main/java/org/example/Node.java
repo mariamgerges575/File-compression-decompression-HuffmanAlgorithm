@@ -3,6 +3,7 @@ package org.example;
 
 public class Node implements Comparable<Node>{
     String c;
+    byte[] bytes;
     int frequency;
     Node left;
     Node right;
@@ -12,9 +13,17 @@ public class Node implements Comparable<Node>{
         this.c=c;
         this.frequency=frequency;
     }
+    Node(String code,byte[] bytes,int frequency){
+        this.c=code;
+        this.bytes=bytes;
+        this.frequency=frequency;
+    }
 
     @Override
     public int compareTo(Node node) {
-        return this.frequency - node.frequency;
+//        if( this.frequency == node.frequency)
+//            return this.c.compareTo(node.c);
+//        else
+            return this.frequency - node.frequency;
     }
 }
