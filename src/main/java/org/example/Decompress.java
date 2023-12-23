@@ -102,8 +102,8 @@ public class Decompress {
             Node n=root;
             int bit=0;
             StringBuilder acc = new StringBuilder();
-//            int bufferSize = 2048 - (2048 % this.n);
-            int bufferSize = 40;
+            int bufferSize = 2048 - (2048 % this.n);
+//            int bufferSize = 40;
 
             byte[] bufferxx = new byte[  bufferSize ];
 

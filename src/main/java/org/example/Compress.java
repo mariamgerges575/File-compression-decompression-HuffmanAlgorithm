@@ -14,8 +14,8 @@ public class Compress {
     HashMap<String, String> codes = new HashMap<>();
 
     public void compressFile(String filePath, int n) {
-//        int bufferSize = 2048-(2048%n); // Adjust the buffer size as needed
-        int bufferSize = 40; // Adjust the buffer size as needed
+        int bufferSize = 2048-(2048%n); // Adjust the buffer size as needed
+//        int bufferSize = 40; // Adjust the buffer size as needed
 
         try (InputStream inputStream = new FileInputStream(filePath)) {
             byte[] buffer = new byte[bufferSize];
